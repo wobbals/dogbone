@@ -1,0 +1,5 @@
+node_modules/
+barcode.log
+resource_dstats.log
+broadcastperf.log
+mediafile.log

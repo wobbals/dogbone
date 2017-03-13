@@ -1,0 +1,32 @@
+{
+  "name": "dogbone",
+  "version": "0.0.0",
+  "description": "Good dog",
+  "main": "index.js",
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wobbals/dogbone.git"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/wobbals/dogbone/issues"
+  },
+  "homepage": "https://github.com/wobbals/dogbone#readme",
+  "dependencies": {
+    "@opentok/neutrino-util": "^1.19.3",
+    "events": "^1.1.1",
+    "gulp": "^3.9.1",
+    "node-uuid": "^1.4.7",
+    "request": "^2.81.0",
+    "rsvp": "^3.4.0",
+    "snap-framework": "^1.0.2",
+    "text-encoding": "^0.6.4",
+    "underscore": "^1.8.3",
+    "ws": "^2.2.0",
+    "zeromq": "^4.2.0"
+  }
+}

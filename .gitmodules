@@ -1,0 +1,3 @@
+[submodule "ext/re"]
+	path = ext/re
+	url = https://github.com/creytiv/re.git
