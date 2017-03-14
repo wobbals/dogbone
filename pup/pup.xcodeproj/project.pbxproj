@@ -7,10 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D48351211E776E1C00EF935A /* vp8_depacketizer.c in Sources */ = {isa = PBXBuildFile; fileRef = D483511F1E776E1C00EF935A /* vp8_depacketizer.c */; };
+		D48351261E7773FA00EF935A /* rtp_packet_buffer.cc in Sources */ = {isa = PBXBuildFile; fileRef = D48351241E7773FA00EF935A /* rtp_packet_buffer.cc */; };
 		D4D27C4C1E74DD1E006630A3 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = D4D27C4B1E74DD1E006630A3 /* main.c */; };
 		D4D27EE11E74DFB1006630A3 /* libre.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D4D27EE01E74DFB1006630A3 /* libre.dylib */; };
 		D4D27EE31E74E4D3006630A3 /* libzmq.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D4D27EE21E74E4D3006630A3 /* libzmq.5.dylib */; };
-		D4D27EE61E74EA15006630A3 /* pup_dogbone.c in Sources */ = {isa = PBXBuildFile; fileRef = D4D27EE41E74EA15006630A3 /* pup_dogbone.c */; };
+		D4D27EE61E74EA15006630A3 /* pup_dogbone.cc in Sources */ = {isa = PBXBuildFile; fileRef = D4D27EE41E74EA15006630A3 /* pup_dogbone.cc */; };
+		D4E2D7941E7727C200488CC6 /* libuv.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D4E2D7931E7727C200488CC6 /* libuv.1.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -26,6 +29,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		D483511F1E776E1C00EF935A /* vp8_depacketizer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vp8_depacketizer.c; sourceTree = "<group>"; };
+		D48351201E776E1C00EF935A /* vp8_depacketizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vp8_depacketizer.h; sourceTree = "<group>"; };
+		D48351241E7773FA00EF935A /* rtp_packet_buffer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rtp_packet_buffer.cc; sourceTree = "<group>"; };
+		D48351251E7773FA00EF935A /* rtp_packet_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rtp_packet_buffer.h; sourceTree = "<group>"; };
 		D4D27C481E74DD1E006630A3 /* pup */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = pup; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4D27C4B1E74DD1E006630A3 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		D4D27C681E74DDB2006630A3 /* re.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = re.h; sourceTree = "<group>"; };
@@ -79,7 +86,7 @@
 		D4D27C981E74DDB2006630A3 /* re_websock.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = re_websock.h; sourceTree = "<group>"; };
 		D4D27EE01E74DFB1006630A3 /* libre.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libre.dylib; path = ../../../../../usr/local/lib/libre.dylib; sourceTree = "<group>"; };
 		D4D27EE21E74E4D3006630A3 /* libzmq.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libzmq.5.dylib; path = ../../../../../usr/local/lib/libzmq.5.dylib; sourceTree = "<group>"; };
-		D4D27EE41E74EA15006630A3 /* pup_dogbone.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pup_dogbone.c; sourceTree = "<group>"; };
+		D4D27EE41E74EA15006630A3 /* pup_dogbone.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pup_dogbone.cc; sourceTree = "<group>"; };
 		D4D27EE51E74EA15006630A3 /* pup_dogbone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pup_dogbone.h; sourceTree = "<group>"; };
 		D4D281821E760818006630A3 /* libwebrtc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwebrtc.a; path = ../../webrtc/src/out/Default/obj/webrtc/libwebrtc.a; sourceTree = "<group>"; };
 		D4D281841E760933006630A3 /* librtc_pc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = librtc_pc.a; path = ../../webrtc/src/out/Default/obj/webrtc/pc/librtc_pc.a; sourceTree = "<group>"; };
@@ -210,6 +217,7 @@
 		D4D282F81E76114C006630A3 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		D4D282F91E76114D006630A3 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
 		D4D282FC1E761162006630A3 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+		D4E2D7931E7727C200488CC6 /* libuv.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libuv.1.dylib; path = ../../../../../usr/local/Cellar/libuv/1.11.0/lib/libuv.1.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -217,6 +225,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4E2D7941E7727C200488CC6 /* libuv.1.dylib in Frameworks */,
 				D4D27EE31E74E4D3006630A3 /* libzmq.5.dylib in Frameworks */,
 				D4D27EE11E74DFB1006630A3 /* libre.dylib in Frameworks */,
 			);
@@ -247,8 +256,12 @@
 			isa = PBXGroup;
 			children = (
 				D4D27C4B1E74DD1E006630A3 /* main.c */,
-				D4D27EE41E74EA15006630A3 /* pup_dogbone.c */,
+				D4D27EE41E74EA15006630A3 /* pup_dogbone.cc */,
 				D4D27EE51E74EA15006630A3 /* pup_dogbone.h */,
+				D48351241E7773FA00EF935A /* rtp_packet_buffer.cc */,
+				D48351251E7773FA00EF935A /* rtp_packet_buffer.h */,
+				D483511F1E776E1C00EF935A /* vp8_depacketizer.c */,
+				D48351201E776E1C00EF935A /* vp8_depacketizer.h */,
 			);
 			path = pup;
 			sourceTree = "<group>";
@@ -329,6 +342,7 @@
 		D4D27EDF1E74DFB1006630A3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D4E2D7931E7727C200488CC6 /* libuv.1.dylib */,
 				D4D282FC1E761162006630A3 /* CoreAudio.framework */,
 				D4D282F81E76114C006630A3 /* AudioToolbox.framework */,
 				D4D282F91E76114D006630A3 /* AudioUnit.framework */,
@@ -520,8 +534,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D4D27EE61E74EA15006630A3 /* pup_dogbone.c in Sources */,
+				D4D27EE61E74EA15006630A3 /* pup_dogbone.cc in Sources */,
 				D4D27C4C1E74DD1E006630A3 /* main.c in Sources */,
+				D48351261E7773FA00EF935A /* rtp_packet_buffer.cc in Sources */,
+				D48351211E776E1C00EF935A /* vp8_depacketizer.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -621,7 +637,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
-					"WEBRTC_POSIX=1",
+					"HAVE_GAI_STRERROR=1",
 				);
 				HEADER_SEARCH_PATHS = (
 					/usr/local/include,
@@ -630,6 +646,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					/usr/local/lib,
 					"/Users/charley/src/webrtc/src/out/Default/**",
+					/usr/local/Cellar/libuv/1.11.0/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -645,6 +662,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					/usr/local/lib,
 					"/Users/charley/src/webrtc/src/out/Default/**",
+					/usr/local/Cellar/libuv/1.11.0/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

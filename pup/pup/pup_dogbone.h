@@ -14,7 +14,9 @@
  */
 
 #include <stdio.h>
+struct pup_dogbone_s;
 
-int pup_dogbone_alloc();
+int pup_dogbone_alloc(struct pup_dogbone_s** dogbone);
+void pup_dogbone_free(struct pup_dogbone_s* dogbone);
 
 #endif /* pup_dogbone_h */
