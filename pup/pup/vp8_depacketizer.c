@@ -412,7 +412,7 @@ struct mbuf* vp8_depacketizer_pop(struct vp8_depacketizer_s* this)
   struct le* front = this->encoded_fifo.head;
   this->encoded_fifo.head = front->next;
   struct mbuf* result = (struct mbuf*)front->data;
-  free(front);
+  //mem_deref(front);
   return result;
 }
 

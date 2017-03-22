@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		D48351211E776E1C00EF935A /* vp8_depacketizer.c in Sources */ = {isa = PBXBuildFile; fileRef = D483511F1E776E1C00EF935A /* vp8_depacketizer.c */; };
 		D48351261E7773FA00EF935A /* rtp_packet_buffer.cc in Sources */ = {isa = PBXBuildFile; fileRef = D48351241E7773FA00EF935A /* rtp_packet_buffer.cc */; };
+		D48E22541E80A75100E5F39C /* opus_writer.c in Sources */ = {isa = PBXBuildFile; fileRef = D48E22521E80A75100E5F39C /* opus_writer.c */; };
+		D48E22601E80B0BA00E5F39C /* libavcodec.57.64.101.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D48E225D1E80B0BA00E5F39C /* libavcodec.57.64.101.dylib */; };
+		D48E22611E80B0BA00E5F39C /* libavutil.55.34.101.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D48E225E1E80B0BA00E5F39C /* libavutil.55.34.101.dylib */; };
+		D48E22621E80B0BA00E5F39C /* libavformat.57.56.101.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D48E225F1E80B0BA00E5F39C /* libavformat.57.56.101.dylib */; };
 		D4D27C4C1E74DD1E006630A3 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = D4D27C4B1E74DD1E006630A3 /* main.c */; };
 		D4D27EE11E74DFB1006630A3 /* libre.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D4D27EE01E74DFB1006630A3 /* libre.dylib */; };
 		D4D27EE31E74E4D3006630A3 /* libzmq.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D4D27EE21E74E4D3006630A3 /* libzmq.5.dylib */; };
@@ -33,6 +37,14 @@
 		D48351201E776E1C00EF935A /* vp8_depacketizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vp8_depacketizer.h; sourceTree = "<group>"; };
 		D48351241E7773FA00EF935A /* rtp_packet_buffer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rtp_packet_buffer.cc; sourceTree = "<group>"; };
 		D48351251E7773FA00EF935A /* rtp_packet_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rtp_packet_buffer.h; sourceTree = "<group>"; };
+		D48E22521E80A75100E5F39C /* opus_writer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = opus_writer.c; sourceTree = "<group>"; };
+		D48E22531E80A75100E5F39C /* opus_writer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opus_writer.h; sourceTree = "<group>"; };
+		D48E22571E80AF8200E5F39C /* libavcodec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavcodec.a; path = ../../../../../usr/local/lib/libavcodec.a; sourceTree = "<group>"; };
+		D48E22581E80AF8200E5F39C /* libavformat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavformat.a; path = ../../../../../usr/local/lib/libavformat.a; sourceTree = "<group>"; };
+		D48E22591E80AF8200E5F39C /* libavutil.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libavutil.a; path = ../../../../../usr/local/lib/libavutil.a; sourceTree = "<group>"; };
+		D48E225D1E80B0BA00E5F39C /* libavcodec.57.64.101.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavcodec.57.64.101.dylib; path = ../../../../../usr/local/lib/libavcodec.57.64.101.dylib; sourceTree = "<group>"; };
+		D48E225E1E80B0BA00E5F39C /* libavutil.55.34.101.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavutil.55.34.101.dylib; path = ../../../../../usr/local/lib/libavutil.55.34.101.dylib; sourceTree = "<group>"; };
+		D48E225F1E80B0BA00E5F39C /* libavformat.57.56.101.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavformat.57.56.101.dylib; path = ../../../../../usr/local/lib/libavformat.57.56.101.dylib; sourceTree = "<group>"; };
 		D4D27C481E74DD1E006630A3 /* pup */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = pup; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4D27C4B1E74DD1E006630A3 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		D4D27C681E74DDB2006630A3 /* re.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = re.h; sourceTree = "<group>"; };
@@ -225,6 +237,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D48E22601E80B0BA00E5F39C /* libavcodec.57.64.101.dylib in Frameworks */,
+				D48E22611E80B0BA00E5F39C /* libavutil.55.34.101.dylib in Frameworks */,
+				D48E22621E80B0BA00E5F39C /* libavformat.57.56.101.dylib in Frameworks */,
 				D4E2D7941E7727C200488CC6 /* libuv.1.dylib in Frameworks */,
 				D4D27EE31E74E4D3006630A3 /* libzmq.5.dylib in Frameworks */,
 				D4D27EE11E74DFB1006630A3 /* libre.dylib in Frameworks */,
@@ -262,6 +277,8 @@
 				D48351251E7773FA00EF935A /* rtp_packet_buffer.h */,
 				D483511F1E776E1C00EF935A /* vp8_depacketizer.c */,
 				D48351201E776E1C00EF935A /* vp8_depacketizer.h */,
+				D48E22521E80A75100E5F39C /* opus_writer.c */,
+				D48E22531E80A75100E5F39C /* opus_writer.h */,
 			);
 			path = pup;
 			sourceTree = "<group>";
@@ -342,6 +359,12 @@
 		D4D27EDF1E74DFB1006630A3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D48E225D1E80B0BA00E5F39C /* libavcodec.57.64.101.dylib */,
+				D48E225E1E80B0BA00E5F39C /* libavutil.55.34.101.dylib */,
+				D48E225F1E80B0BA00E5F39C /* libavformat.57.56.101.dylib */,
+				D48E22571E80AF8200E5F39C /* libavcodec.a */,
+				D48E22581E80AF8200E5F39C /* libavformat.a */,
+				D48E22591E80AF8200E5F39C /* libavutil.a */,
 				D4E2D7931E7727C200488CC6 /* libuv.1.dylib */,
 				D4D282FC1E761162006630A3 /* CoreAudio.framework */,
 				D4D282F81E76114C006630A3 /* AudioToolbox.framework */,
@@ -535,6 +558,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D4D27EE61E74EA15006630A3 /* pup_dogbone.cc in Sources */,
+				D48E22541E80A75100E5F39C /* opus_writer.c in Sources */,
 				D4D27C4C1E74DD1E006630A3 /* main.c in Sources */,
 				D48351261E7773FA00EF935A /* rtp_packet_buffer.cc in Sources */,
 				D48351211E776E1C00EF935A /* vp8_depacketizer.c in Sources */,
@@ -655,6 +679,7 @@
 		D4D27C511E74DD1E006630A3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = "HAVE_GAI_STRERROR=1";
 				HEADER_SEARCH_PATHS = (
 					/usr/local/include,
 					/usr/local/ssl/include,

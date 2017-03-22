@@ -14,6 +14,7 @@ extern "C" {
 
 #include "pup_dogbone.h"
 #include "vp8_depacketizer.h"
+#include "opus_writer.h"
 }
 
 #include <map>
@@ -37,18 +38,32 @@ struct stream_attributes_s {
 
 struct pup_dogbone_s {
     void* zmq_context;
-    void* control_socket;
+  void* dogbone_pull_socket;
+  void* pup_push_socket;
     uv_thread_t control_thread;
 
     std::map<std::string, struct stream_attributes_s*> stream_attrs;
+  std::map<std::string, struct opus_writer_s*> opuses;
   struct vp8_depacketizer_s* vp8;
 };
+
+#pragma mark - Internal utilities
+
+static void notify_new_stream_file(struct pup_dogbone_s* dogbone,
+                                   const char* stream_id,
+                                   const char* path)
+{
+  zmq_send(dogbone->pup_push_socket, stream_id, strlen(stream_id),
+           ZMQ_SNDMORE);
+  zmq_send(dogbone->pup_push_socket, path, strlen(path), 0);
+}
 
 static bool attr_walk(const char *name, const char *value, void *arg) {
     printf("%s : %s\n", name, value);
     return 1;
 }
-int print_f (const char *p, size_t size, void *arg) {
+
+static int print_f (const char *p, size_t size, void *arg) {
     printf("re: %s\n", p);
     return 0;
 
@@ -62,17 +77,40 @@ int print_f (const char *p, size_t size, void *arg) {
 static struct stream_attributes_s*
 dogbone_stream_attrs(struct pup_dogbone_s* dogbone, std::string& stream_id)
 {
-    auto search = dogbone->stream_attrs.find(stream_id);
-    if (search == dogbone->stream_attrs.end()) {
-        struct stream_attributes_s* attrs = (struct stream_attributes_s*)
-        calloc(1, sizeof(stream_attributes_s));
-        attrs->stream_id = stream_id;
-        attrs->codec_names = std::map<int16_t, std::string>();
-        attrs->sample_rates = std::map<int16_t, int64_t>();
-        attrs->channel_counts = std::map<int16_t, int8_t>();
-        dogbone->stream_attrs[stream_id] = attrs;
-    }
-    return dogbone->stream_attrs[stream_id];
+  auto search = dogbone->stream_attrs.find(stream_id);
+  if (search == dogbone->stream_attrs.end() ||
+      NULL == dogbone->stream_attrs[stream_id])
+  {
+    struct stream_attributes_s* attrs = (struct stream_attributes_s*)
+    calloc(1, sizeof(stream_attributes_s));
+    attrs->stream_id = stream_id;
+    attrs->codec_names = std::map<int16_t, std::string>();
+    attrs->sample_rates = std::map<int16_t, int64_t>();
+    attrs->channel_counts = std::map<int16_t, int8_t>();
+    dogbone->stream_attrs[stream_id] = attrs;
+  }
+  return dogbone->stream_attrs[stream_id];
+}
+
+static struct opus_writer_s*
+dogbone_get_opus(struct pup_dogbone_s* dogbone, std::string& stream_id)
+{
+  auto search = dogbone->opuses.find(stream_id);
+  if (search == dogbone->opuses.end() ||
+      NULL == dogbone->opuses[stream_id])
+  {
+    struct opus_writer_s* opus;
+    opus_writer_alloc(&opus);
+    struct opus_writer_config config;
+    config.path_prefix = "/tmp";
+    config.stream_id = stream_id.c_str();
+    opus_writer_load_config(opus, &config);
+    dogbone->opuses[stream_id] = opus;
+
+    notify_new_stream_file(dogbone, stream_id.c_str(),
+                           opus_depacketizer_get_outfile_path(opus));
+  }
+  return dogbone->opuses[stream_id];
 }
 
 static void build_rtpmap(struct pup_dogbone_s* dogbone,
@@ -134,14 +172,35 @@ static void handle_rtp(struct pup_dogbone_s* dogbone,
   dogbone->stream_attrs[message->stream_id];
   struct rtp_header hdr;
   rtp_hdr_decode(&hdr, mbuf);
+  
+  if (NULL == attrs ||
+      attrs->codec_names.find(hdr.pt) == attrs->codec_names.end())
+  {
+    printf("unknown stream id %s or payload type %d\n",
+           message->stream_id.c_str(), hdr.pt);
+    return;
+  }
+
   printf("ssrc: %d pt: %d seqno: %u ts: %u codec: %s\n",
          hdr.ssrc, hdr.pt, hdr.seq, hdr.ts,
          attrs->codec_names[hdr.pt].c_str());
 
   if (!attrs->codec_names[hdr.pt].compare("VP8")) {
     vp8_depacketizer_push(dogbone->vp8, mbuf);
+    // DON'T KEEP THIS: We're not doing anything with vp8 right now so we'll
+    // just free depacketized frames as we go
+    struct mbuf* vp8_frame = vp8_depacketizer_pop(dogbone->vp8);
+    while (vp8_frame) {
+      mem_deref(vp8_frame);
+      vp8_frame = vp8_depacketizer_pop(dogbone->vp8);
+    }
+  } else if (!attrs->codec_names[hdr.pt].compare("opus")) {
+    //mbuf->pos = RTP_HEADER_SIZE;
+    struct opus_writer_s* opus = dogbone_get_opus(dogbone, message->stream_id);
+    opus_depacketizer_push(opus, &hdr, mbuf);
   } else {
     // TODO: add other depacketizers here and make this multi-stream-able
+    printf("warn: unknown payload type %d\n", hdr.pt);
     mem_deref(mbuf);
   }
 }
@@ -201,7 +260,7 @@ static void control_main(void* p) {
     struct pup_dogbone_s* dogbone = (struct pup_dogbone_s*)p;
     printf("sup\n");
     // connect to dogbone ipc
-    int ret = zmq_connect(dogbone->control_socket, "ipc:///tmp/dogbone");
+    int ret = zmq_connect(dogbone->dogbone_pull_socket, "ipc:///tmp/dogbone");
     if (ret < 0) {
         printf("failed to connect to dogbone. errno: %d", errno);
         return;
@@ -209,10 +268,10 @@ static void control_main(void* p) {
     printf("connected to dogbone ipc\n");
     struct pup_message_s* message = (struct pup_message_s*)
     calloc(1, sizeof(struct pup_message_s));
-    ret = receive_message(dogbone->control_socket, message);
+    ret = receive_message(dogbone->dogbone_pull_socket, message);
     while (!ret) {
         handle_message(dogbone, message);
-        ret = receive_message(dogbone->control_socket, message);
+        ret = receive_message(dogbone->dogbone_pull_socket, message);
     }
 }
 
@@ -223,11 +282,13 @@ int pup_dogbone_alloc(struct pup_dogbone_s** dogbone_out) {
   (struct pup_dogbone_s*) calloc(1, sizeof(struct pup_dogbone_s));
   dogbone->stream_attrs =
   std::map<std::string, struct stream_attributes_s*>();
+  dogbone->opuses = std::map<std::string, struct opus_writer_s*>();
   vp8_depacketizer_alloc(&dogbone->vp8);
-
   //  Prepare our context and socket
   dogbone->zmq_context = zmq_ctx_new();
-  dogbone->control_socket = zmq_socket (dogbone->zmq_context, ZMQ_PULL);
+  dogbone->dogbone_pull_socket = zmq_socket(dogbone->zmq_context, ZMQ_PULL);
+  dogbone->pup_push_socket = zmq_socket(dogbone->zmq_context, ZMQ_PUSH);
+  zmq_bind(dogbone->pup_push_socket, "ipc:///tmp/pup");
   uv_thread_create(&dogbone->control_thread, control_main, dogbone);
   return 0;
 }
@@ -237,6 +298,12 @@ void pup_dogbone_free(struct pup_dogbone_s* dogbone) {
         free(attrs.second);
     }
     dogbone->stream_attrs.clear();
+  vp8_depacketizer_free(dogbone->vp8);
+  for (auto opus : dogbone->opuses) {
+    opus_depacketizer_free(opus.second);
+  }
+  dogbone->opuses.clear();
+  zmq_unbind(dogbone->pup_push_socket, "ipc://tmp/pup");
 
     // this will crash. implement an interrupt and join on the thread
     free(dogbone);
