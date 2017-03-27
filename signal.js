@@ -1,14 +1,13 @@
 var request = require('request');
 
-module.exports.send = function(streamId, utterance) {
+var nameSent = false;
+
+var sendSignal = function(type, signal) {
   var sessionId = "";
   var projectId = "";
-  var secret = ""
-  var jwt = ""
+  var secret = "";
 
-  var url = `https://api.opentok.com/v2/project/${projectId}/session/${sessionId}/signal`;
-
-  var signal = { streamId: streamId, phrase: utterance }
+  var url = `https://anvil-tbdev.opentok.com/v2/project/${projectId}/session/${sessionId}/signal`;
 
   var options = {
     url: url,
@@ -16,7 +15,7 @@ module.exports.send = function(streamId, utterance) {
       'X-TB-PARTNER-AUTH': `${projectId}:${secret}`
     },
     json: {
-      "type": "stt", 
+      "type": type, 
       "data": JSON.stringify(signal)
     }
   };
@@ -29,4 +28,16 @@ module.exports.send = function(streamId, utterance) {
   }
   //console.log(JSON.stringify(options, null, ' '));
   request.post(options, callback);
+};
+
+module.exports.utterance = function(streamId, utterance) {
+  if (!nameSent) {
+    nameSent = true;
+    var signal = "watson";
+    var type = "name";
+    sendSignal(type, signal);
+  }
+  var signal = { "body": utterance, "date": new Date().getTime()/1000 };
+  var type = "message";
+  sendSignal(type, signal);
 };

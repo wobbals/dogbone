@@ -60,7 +60,7 @@ module.exports.recognizeStreamPath = function(streamId, path) {
   //recognizeStream.on('results', function(event) { onEvent('Results:', event); });
   recognizeStream.on('data', function(utterance) { 
     console.log(`${streamId}: ${JSON.stringify(utterance, null, ' ')}`);
-    signal.send(streamId.toString(), utterance.toString())
+    signal.utterance(streamId.toString(), utterance.toString())
   });
   recognizeStream.on('error', function(event) { onEvent('Error:', event); });
   recognizeStream.on('close', function(event) { onEvent('Close:', event); });

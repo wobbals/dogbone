@@ -3,3 +3,4 @@ barcode.log
 resource_dstats.log
 broadcastperf.log
 mediafile.log
+local.json

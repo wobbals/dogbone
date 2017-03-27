@@ -38,7 +38,7 @@ var ot = OpenTok({
   log: function(action, args) {
     logger.debug(logging.format(action, args));
   },
-  apiUrl: "https://anvil.opentok.com"
+  apiUrl: "https://anvil-tbdev.opentok.com"
 });
 
 var subscribers = {};
