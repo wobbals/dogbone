@@ -9,6 +9,7 @@
 #ifndef vp8_depacketizer_h
 #define vp8_depacketizer_h
 
+#include <libavcodec/avcodec.h>
 #include <re/re.h>
 
 struct vp8_depacketizer_s;
@@ -18,7 +19,7 @@ void vp8_depacketizer_free(struct vp8_depacketizer_s* depacketizer);
 
 void vp8_depacketizer_push(struct vp8_depacketizer_s* depacketizer,
                            struct mbuf* packet);
-struct mbuf* vp8_depacketizer_pop(struct vp8_depacketizer_s* depacketizer);
+AVPacket* vp8_depacketizer_pop(struct vp8_depacketizer_s* depacketizer);
 
 
 #endif /* vp8_depacketizer_h */

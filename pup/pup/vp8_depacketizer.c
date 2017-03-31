@@ -264,6 +264,7 @@ bool Parse(struct ParsedPayload* parsed_payload,
 
   if (partition_id > 8) {
     // Weak check for corrupt payload_data: PartID MUST NOT be larger than 8.
+    printf("invalid partid\n");
     return false;
   }
 
@@ -314,6 +315,7 @@ bool Parse(struct ParsedPayload* parsed_payload,
 struct vp8_depacketizer_s {
   struct rtp_buffer_s* packet_buffer;
   struct list encoded_fifo;
+  bool has_first_keyframe;
 };
 
 // walks the packet fifo, summing the total number of bytes needed to contain
@@ -322,10 +324,12 @@ bool tally_packet_size(struct rtp_packet_s* packet, void *arg) {
   size_t* size = (size_t*)arg;
   // nb this adds more bytes than we need in total -- rtp headers will not be
   // copied over to destination, nor will vp8 payload descriptor
-  *size += packet->packet->end;
+  *size += (packet->packet->end - packet->packet->pos);
   return packet->header.m;
 };
 
+// calculates size of rtp packets inside the rtp buffer, doesn't necessarily
+// corrsepond to the size of the actual encoded frame
 size_t calculate_frame_size(struct vp8_depacketizer_s* this,
                             struct ParsedPayload* parsed_payload)
 {
@@ -334,38 +338,57 @@ size_t calculate_frame_size(struct vp8_depacketizer_s* this,
   return frame_size;
 }
 
-static void try_parse(struct vp8_depacketizer_s* this) {
-  struct rtp_packet_s* packet = rtp_buffer_pop(this->packet_buffer);
+static void try_parse(struct vp8_depacketizer_s* pthis) {
+  struct rtp_packet_s* packet = rtp_buffer_pop(pthis->packet_buffer);
   struct mbuf* payload = packet->packet;
   struct rtp_header* header = &(packet->header);
   struct ParsedPayload parsed_payload;
-  int ret = Parse(&parsed_payload, payload->buf, payload->end);
+  int ret = Parse(&parsed_payload,
+                  &(payload->buf[payload->pos]),
+                  payload->end - payload->pos);
   if (!ret) {
     // ?
     printf("failed to parse vp8 header. i don't know what to do.");
     return;
   }
-  size_t frame_size = calculate_frame_size(this, &parsed_payload);
+  if (!pthis->has_first_keyframe &&
+      parsed_payload.frame_type != kVideoFrameKey)
+  {
+    // discard all data before the first keyframe
+    // TODO: plug this leak
+    return;
+  } else if (!pthis->has_first_keyframe &&
+             parsed_payload.frame_type == kVideoFrameKey)
+  {
+    pthis->has_first_keyframe = true;
+  }
+  size_t frame_size = calculate_frame_size(pthis, &parsed_payload);
   // don't forget: you popped a frame before calling the method above this line
   frame_size += parsed_payload.payload_length;
   // allocate new buffer
-  struct mbuf* frame_buffer = mbuf_alloc(frame_size);
+  AVPacket* encoded_frame = av_packet_alloc();
+  av_new_packet(encoded_frame, (int)frame_size);
+  encoded_frame->pts = packet->header.ts;
+  encoded_frame->dts = encoded_frame->pts;
+  size_t frame_copy_index = 0;
   // copy all the packet payloads over
   while (1) {
     // consume the payload
-    mbuf_write_mem(frame_buffer, parsed_payload.payload,
-                   parsed_payload.payload_length);
+    memcpy(&(encoded_frame->buf->data[frame_copy_index]),
+           parsed_payload.payload,
+           parsed_payload.payload_length);
+    frame_copy_index += parsed_payload.payload_length;
     if (header->m) {
       // once the last packet is copied out, we're done
       break;
     }
     rtp_packet_free(packet);
-    packet = rtp_buffer_pop(this->packet_buffer);
+    packet = rtp_buffer_pop(pthis->packet_buffer);
     payload = packet->packet;
     header = &(packet->header);
     ret = Parse(&parsed_payload,
-                payload->buf + RTP_HEADER_SIZE,
-                payload->end - RTP_HEADER_SIZE);
+                &(payload->buf[payload->pos]),
+                payload->end - payload->pos);
     if (!ret) {
       // ?
       printf("failed to parse vp8 header after beginning depacketization. "
@@ -375,7 +398,7 @@ static void try_parse(struct vp8_depacketizer_s* this) {
   }
   rtp_packet_free(packet);
   struct le* element = (struct le*) calloc(1, sizeof(struct le));
-  list_append(&this->encoded_fifo, element, frame_buffer);
+  list_append(&pthis->encoded_fifo, element, encoded_frame);
 }
 
 int vp8_depacketizer_alloc(struct vp8_depacketizer_s** depacketizer_out) {
@@ -395,6 +418,7 @@ void vp8_depacketizer_free(struct vp8_depacketizer_s* depacketizer) {
 void vp8_depacketizer_push(struct vp8_depacketizer_s* depacketizer,
                            struct mbuf* buffer)
 {
+  buffer->pos = 0;
     struct rtp_packet_s* packet = rtp_packet_from_buffer(buffer);
     rtp_buffer_push(depacketizer->packet_buffer, packet);
 
@@ -404,14 +428,15 @@ void vp8_depacketizer_push(struct vp8_depacketizer_s* depacketizer,
     }
 }
 
-struct mbuf* vp8_depacketizer_pop(struct vp8_depacketizer_s* this)
+AVPacket* vp8_depacketizer_pop(struct vp8_depacketizer_s* this)
 {
   if (this->encoded_fifo.head == NULL) {
     return NULL;
   }
   struct le* front = this->encoded_fifo.head;
   this->encoded_fifo.head = front->next;
-  struct mbuf* result = (struct mbuf*)front->data;
+  AVPacket* result = (AVPacket*)front->data;
+  //front->data = NULL;
   //mem_deref(front);
   return result;
 }

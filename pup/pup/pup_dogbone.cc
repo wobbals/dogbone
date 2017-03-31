@@ -15,6 +15,8 @@ extern "C" {
 #include "pup_dogbone.h"
 #include "vp8_depacketizer.h"
 #include "opus_writer.h"
+#include "opus_parser.h"
+#include "network_source.h"
 }
 
 #include <map>
@@ -22,29 +24,31 @@ extern "C" {
 #include <vector>
 
 struct pup_message_s {
-    std::string name;
-    std::string stream_id;
-    uint8_t* payload;
-    size_t payload_size;
+  std::string name;
+  std::string stream_id;
+  uint8_t* payload;
+  size_t payload_size;
 };
 
 struct stream_attributes_s {
-    std::string stream_id;
-    // maps generated from rtpmap -- indexed by payload type
-    std::map<int16_t, std::string> codec_names;
-    std::map<int16_t, int64_t> sample_rates;
-    std::map<int16_t, int8_t> channel_counts;
+  std::string stream_id;
+  // maps generated from rtpmap -- indexed by payload type
+  std::map<int16_t, std::string> codec_names;
+  std::map<int16_t, int64_t> sample_rates;
+  std::map<int16_t, int8_t> channel_counts;
 };
 
 struct pup_dogbone_s {
-    void* zmq_context;
+  void* zmq_context;
   void* dogbone_pull_socket;
   void* pup_push_socket;
-    uv_thread_t control_thread;
+  uv_thread_t control_thread;
 
-    std::map<std::string, struct stream_attributes_s*> stream_attrs;
+  std::map<std::string, struct stream_attributes_s*> stream_attrs;
   std::map<std::string, struct opus_writer_s*> opuses;
   struct vp8_depacketizer_s* vp8;
+
+  struct network_source_s* network_source;
 };
 
 #pragma mark - Internal utilities
@@ -108,7 +112,7 @@ dogbone_get_opus(struct pup_dogbone_s* dogbone, std::string& stream_id)
     dogbone->opuses[stream_id] = opus;
 
     notify_new_stream_file(dogbone, stream_id.c_str(),
-                           opus_depacketizer_get_outfile_path(opus));
+                           opus_writer_get_outfile_path(opus));
   }
   return dogbone->opuses[stream_id];
 }
@@ -140,6 +144,14 @@ static void build_rtpmap(struct pup_dogbone_s* dogbone,
     }
 }
 
+static void setup_network_source(struct pup_dogbone_s* pthis)
+{
+  struct network_source_config_s config;
+  config.audio_codec_id = AV_CODEC_ID_OPUS;
+  config.video_codec_id = AV_CODEC_ID_VP8;
+  network_source_load_config(pthis->network_source, &config);
+}
+
 static void handle_offer(struct pup_dogbone_s* dogbone,
                          struct pup_message_s* message)
 {
@@ -158,6 +170,10 @@ static void handle_offer(struct pup_dogbone_s* dogbone,
     sdp_decode(sdp_session, &mbuf, 1);
     build_rtpmap(dogbone, message->stream_id, sdp_session);
     mem_deref(sdp_session);
+  // TODO: We should also receive the answer from dogbone so we know what to
+  // expect for actual codecs negotiated. for now just assume vp8+opus and
+  // hope for the best.
+  setup_network_source(dogbone);
 }
 
 #pragma mark - dogbone handlers
@@ -189,15 +205,19 @@ static void handle_rtp(struct pup_dogbone_s* dogbone,
     vp8_depacketizer_push(dogbone->vp8, mbuf);
     // DON'T KEEP THIS: We're not doing anything with vp8 right now so we'll
     // just free depacketized frames as we go
-    struct mbuf* vp8_frame = vp8_depacketizer_pop(dogbone->vp8);
+    AVPacket* vp8_frame = vp8_depacketizer_pop(dogbone->vp8);
     while (vp8_frame) {
-      mem_deref(vp8_frame);
+      network_source_push_video(dogbone->network_source, vp8_frame);
       vp8_frame = vp8_depacketizer_pop(dogbone->vp8);
     }
   } else if (!attrs->codec_names[hdr.pt].compare("opus")) {
     //mbuf->pos = RTP_HEADER_SIZE;
-    struct opus_writer_s* opus = dogbone_get_opus(dogbone, message->stream_id);
-    opus_depacketizer_push(opus, &hdr, mbuf);
+    // TODO: Define an audio writer mode for those use cases.
+    //struct opus_writer_s* opus = dogbone_get_opus(dogbone, message->stream_id);
+    //opus_writer_push(opus, &hdr, mbuf);
+    AVPacket pkt = { 0 };
+    opus_parse(mbuf, &hdr, &pkt);
+    network_source_push_audio(dogbone->network_source, &pkt);
   } else {
     // TODO: add other depacketizers here and make this multi-stream-able
     printf("warn: unknown payload type %d\n", hdr.pt);
@@ -280,6 +300,7 @@ static void control_main(void* p) {
 int pup_dogbone_alloc(struct pup_dogbone_s** dogbone_out) {
   struct pup_dogbone_s* dogbone =
   (struct pup_dogbone_s*) calloc(1, sizeof(struct pup_dogbone_s));
+  network_source_alloc(&dogbone->network_source);
   dogbone->stream_attrs =
   std::map<std::string, struct stream_attributes_s*>();
   dogbone->opuses = std::map<std::string, struct opus_writer_s*>();
@@ -290,6 +311,7 @@ int pup_dogbone_alloc(struct pup_dogbone_s** dogbone_out) {
   dogbone->pup_push_socket = zmq_socket(dogbone->zmq_context, ZMQ_PUSH);
   zmq_bind(dogbone->pup_push_socket, "ipc:///tmp/pup");
   uv_thread_create(&dogbone->control_thread, control_main, dogbone);
+  *dogbone_out = dogbone;
   return 0;
 }
 
@@ -300,11 +322,17 @@ void pup_dogbone_free(struct pup_dogbone_s* dogbone) {
     dogbone->stream_attrs.clear();
   vp8_depacketizer_free(dogbone->vp8);
   for (auto opus : dogbone->opuses) {
-    opus_depacketizer_free(opus.second);
+    opus_writer_free(opus.second);
   }
   dogbone->opuses.clear();
   zmq_unbind(dogbone->pup_push_socket, "ipc://tmp/pup");
 
     // this will crash. implement an interrupt and join on the thread
     free(dogbone);
+}
+
+struct network_source_s* pup_dogbone_get_network_source
+(struct pup_dogbone_s* dogbone)
+{
+  return dogbone->network_source;
 }

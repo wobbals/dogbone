@@ -36,7 +36,7 @@ int opus_writer_alloc(struct opus_writer_s** depacketizer_out)
   return 0;
 }
 
-void opus_depacketizer_free(struct opus_writer_s* depacketizer)
+void opus_writer_free(struct opus_writer_s* depacketizer)
 {
   free(depacketizer);
 }
@@ -123,7 +123,7 @@ static const char *get_error_text(const int error)
   return error_buffer;
 }
 
-int opus_depacketizer_push(struct opus_writer_s* pthis,
+int opus_writer_push(struct opus_writer_s* pthis,
                            struct rtp_header* header,
                            struct mbuf* packet)
 {
@@ -141,15 +141,15 @@ int opus_depacketizer_push(struct opus_writer_s* pthis,
   pkt.size = (int)(packet->end - packet->pos);
   int ret = av_interleaved_write_frame(pthis->format_context, &pkt);
   mem_deref(packet);
-//  if (header->ts - pthis->first_ts > 480000) {
-//    int error;
-//    if ((error = av_write_trailer(pthis->format_context)) < 0) {
-//      fprintf(stderr, "Could not write output file trailer (error '%s')\n",
-//              get_error_text(error));
-//      return error;
-//    }
-//    exit(0);
-//  }
+  return ret;
+}
+
+int opus_writer_close(struct opus_writer_s* pthis) {
+  int ret;
+  if ((ret = av_write_trailer(pthis->format_context)) < 0) {
+    fprintf(stderr, "Could not write output file trailer (error '%s')\n",
+            get_error_text(ret));
+  }
   return ret;
 }
 

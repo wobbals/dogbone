@@ -7,12 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D474C5B31E88AF090090610D /* vp8_decode.c in Sources */ = {isa = PBXBuildFile; fileRef = D474C5B11E88AF090090610D /* vp8_decode.c */; };
+		D474C5B61E88B01D0090610D /* network_source.cc in Sources */ = {isa = PBXBuildFile; fileRef = D474C5B41E88B01D0090610D /* network_source.cc */; };
+		D474C5B81E88B3AE0090610D /* libarcc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D474C5B71E88B3AE0090610D /* libarcc.dylib */; };
 		D48351211E776E1C00EF935A /* vp8_depacketizer.c in Sources */ = {isa = PBXBuildFile; fileRef = D483511F1E776E1C00EF935A /* vp8_depacketizer.c */; };
 		D48351261E7773FA00EF935A /* rtp_packet_buffer.cc in Sources */ = {isa = PBXBuildFile; fileRef = D48351241E7773FA00EF935A /* rtp_packet_buffer.cc */; };
 		D48E22541E80A75100E5F39C /* opus_writer.c in Sources */ = {isa = PBXBuildFile; fileRef = D48E22521E80A75100E5F39C /* opus_writer.c */; };
-		D48E22601E80B0BA00E5F39C /* libavcodec.57.64.101.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D48E225D1E80B0BA00E5F39C /* libavcodec.57.64.101.dylib */; };
 		D48E22611E80B0BA00E5F39C /* libavutil.55.34.101.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D48E225E1E80B0BA00E5F39C /* libavutil.55.34.101.dylib */; };
 		D48E22621E80B0BA00E5F39C /* libavformat.57.56.101.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D48E225F1E80B0BA00E5F39C /* libavformat.57.56.101.dylib */; };
+		D4BAE06D1E8D9300007FE693 /* opus_parser.c in Sources */ = {isa = PBXBuildFile; fileRef = D4BAE06B1E8D9300007FE693 /* opus_parser.c */; };
+		D4BAE06F1E8D9EDD007FE693 /* libavfilter.6.65.100.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D4BAE06E1E8D9EDD007FE693 /* libavfilter.6.65.100.dylib */; };
+		D4BAE0711E8D9EF6007FE693 /* libMagickWand-7.Q16HDRI.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D4BAE0701E8D9EF6007FE693 /* libMagickWand-7.Q16HDRI.0.dylib */; };
+		D4BAE0731E8DF4C5007FE693 /* libavcodec.57.64.101.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D48E225D1E80B0BA00E5F39C /* libavcodec.57.64.101.dylib */; };
 		D4D27C4C1E74DD1E006630A3 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = D4D27C4B1E74DD1E006630A3 /* main.c */; };
 		D4D27EE11E74DFB1006630A3 /* libre.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D4D27EE01E74DFB1006630A3 /* libre.dylib */; };
 		D4D27EE31E74E4D3006630A3 /* libzmq.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D4D27EE21E74E4D3006630A3 /* libzmq.5.dylib */; };
@@ -33,6 +39,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		D474C5B11E88AF090090610D /* vp8_decode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vp8_decode.c; sourceTree = "<group>"; };
+		D474C5B21E88AF090090610D /* vp8_decode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vp8_decode.h; sourceTree = "<group>"; };
+		D474C5B41E88B01D0090610D /* network_source.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = network_source.cc; sourceTree = "<group>"; };
+		D474C5B51E88B01D0090610D /* network_source.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = network_source.h; sourceTree = "<group>"; };
+		D474C5B71E88B3AE0090610D /* libarcc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libarcc.dylib; path = ../../barc/build/libarcc.dylib; sourceTree = "<group>"; };
 		D483511F1E776E1C00EF935A /* vp8_depacketizer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vp8_depacketizer.c; sourceTree = "<group>"; };
 		D48351201E776E1C00EF935A /* vp8_depacketizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vp8_depacketizer.h; sourceTree = "<group>"; };
 		D48351241E7773FA00EF935A /* rtp_packet_buffer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = rtp_packet_buffer.cc; sourceTree = "<group>"; };
@@ -45,6 +56,10 @@
 		D48E225D1E80B0BA00E5F39C /* libavcodec.57.64.101.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavcodec.57.64.101.dylib; path = ../../../../../usr/local/lib/libavcodec.57.64.101.dylib; sourceTree = "<group>"; };
 		D48E225E1E80B0BA00E5F39C /* libavutil.55.34.101.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavutil.55.34.101.dylib; path = ../../../../../usr/local/lib/libavutil.55.34.101.dylib; sourceTree = "<group>"; };
 		D48E225F1E80B0BA00E5F39C /* libavformat.57.56.101.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavformat.57.56.101.dylib; path = ../../../../../usr/local/lib/libavformat.57.56.101.dylib; sourceTree = "<group>"; };
+		D4BAE06B1E8D9300007FE693 /* opus_parser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = opus_parser.c; sourceTree = "<group>"; };
+		D4BAE06C1E8D9300007FE693 /* opus_parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opus_parser.h; sourceTree = "<group>"; };
+		D4BAE06E1E8D9EDD007FE693 /* libavfilter.6.65.100.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libavfilter.6.65.100.dylib; path = ../../../../../usr/local/lib/libavfilter.6.65.100.dylib; sourceTree = "<group>"; };
+		D4BAE0701E8D9EF6007FE693 /* libMagickWand-7.Q16HDRI.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libMagickWand-7.Q16HDRI.0.dylib"; path = "../../../../../usr/local/lib/libMagickWand-7.Q16HDRI.0.dylib"; sourceTree = "<group>"; };
 		D4D27C481E74DD1E006630A3 /* pup */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = pup; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4D27C4B1E74DD1E006630A3 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		D4D27C681E74DDB2006630A3 /* re.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = re.h; sourceTree = "<group>"; };
@@ -237,7 +252,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D48E22601E80B0BA00E5F39C /* libavcodec.57.64.101.dylib in Frameworks */,
+				D4BAE0731E8DF4C5007FE693 /* libavcodec.57.64.101.dylib in Frameworks */,
+				D4BAE0711E8D9EF6007FE693 /* libMagickWand-7.Q16HDRI.0.dylib in Frameworks */,
+				D4BAE06F1E8D9EDD007FE693 /* libavfilter.6.65.100.dylib in Frameworks */,
+				D474C5B81E88B3AE0090610D /* libarcc.dylib in Frameworks */,
 				D48E22611E80B0BA00E5F39C /* libavutil.55.34.101.dylib in Frameworks */,
 				D48E22621E80B0BA00E5F39C /* libavformat.57.56.101.dylib in Frameworks */,
 				D4E2D7941E7727C200488CC6 /* libuv.1.dylib in Frameworks */,
@@ -271,14 +289,20 @@
 			isa = PBXGroup;
 			children = (
 				D4D27C4B1E74DD1E006630A3 /* main.c */,
+				D474C5B51E88B01D0090610D /* network_source.h */,
+				D474C5B41E88B01D0090610D /* network_source.cc */,
+				D48E22521E80A75100E5F39C /* opus_writer.c */,
+				D48E22531E80A75100E5F39C /* opus_writer.h */,
+				D4BAE06B1E8D9300007FE693 /* opus_parser.c */,
+				D4BAE06C1E8D9300007FE693 /* opus_parser.h */,
 				D4D27EE41E74EA15006630A3 /* pup_dogbone.cc */,
 				D4D27EE51E74EA15006630A3 /* pup_dogbone.h */,
 				D48351241E7773FA00EF935A /* rtp_packet_buffer.cc */,
 				D48351251E7773FA00EF935A /* rtp_packet_buffer.h */,
+				D474C5B11E88AF090090610D /* vp8_decode.c */,
+				D474C5B21E88AF090090610D /* vp8_decode.h */,
 				D483511F1E776E1C00EF935A /* vp8_depacketizer.c */,
 				D48351201E776E1C00EF935A /* vp8_depacketizer.h */,
-				D48E22521E80A75100E5F39C /* opus_writer.c */,
-				D48E22531E80A75100E5F39C /* opus_writer.h */,
 			);
 			path = pup;
 			sourceTree = "<group>";
@@ -359,6 +383,9 @@
 		D4D27EDF1E74DFB1006630A3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D4BAE0701E8D9EF6007FE693 /* libMagickWand-7.Q16HDRI.0.dylib */,
+				D4BAE06E1E8D9EDD007FE693 /* libavfilter.6.65.100.dylib */,
+				D474C5B71E88B3AE0090610D /* libarcc.dylib */,
 				D48E225D1E80B0BA00E5F39C /* libavcodec.57.64.101.dylib */,
 				D48E225E1E80B0BA00E5F39C /* libavutil.55.34.101.dylib */,
 				D48E225F1E80B0BA00E5F39C /* libavformat.57.56.101.dylib */,
@@ -561,7 +588,10 @@
 				D48E22541E80A75100E5F39C /* opus_writer.c in Sources */,
 				D4D27C4C1E74DD1E006630A3 /* main.c in Sources */,
 				D48351261E7773FA00EF935A /* rtp_packet_buffer.cc in Sources */,
+				D474C5B31E88AF090090610D /* vp8_decode.c in Sources */,
+				D4BAE06D1E8D9300007FE693 /* opus_parser.c in Sources */,
 				D48351211E776E1C00EF935A /* vp8_depacketizer.c in Sources */,
+				D474C5B61E88B01D0090610D /* network_source.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -666,10 +696,11 @@
 				HEADER_SEARCH_PATHS = (
 					/usr/local/include,
 					/usr/local/ssl/include,
+					/Users/charley/src/barc/barc,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					/usr/local/lib,
-					"/Users/charley/src/webrtc/src/out/Default/**",
+					"/Users/charley/src/barc/build/**",
 					/usr/local/Cellar/libuv/1.11.0/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -683,10 +714,11 @@
 				HEADER_SEARCH_PATHS = (
 					/usr/local/include,
 					/usr/local/ssl/include,
+					/Users/charley/src/barc/barc,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					/usr/local/lib,
-					"/Users/charley/src/webrtc/src/out/Default/**",
+					"/Users/charley/src/barc/build/**",
 					/usr/local/Cellar/libuv/1.11.0/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -1,13 +1,17 @@
 //
-//  opus_depacketizer.h
+//  opus_writer.h
 //  pup
 //
 //  Created by Charley Robinson on 3/20/17.
 //
 //
 
-#ifndef opus_depacketizer_h
-#define opus_depacketizer_h
+#ifndef opus_writer_h
+#define opus_writer_h
+
+/**
+ * Writes opus packets to a file.
+ */
 
 struct opus_writer_s;
 
@@ -21,13 +25,14 @@ struct opus_writer_config {
   void* callback_arg;
 };
 
-int opus_writer_alloc(struct opus_writer_s** depacketizer_out);
-void opus_depacketizer_free(struct opus_writer_s* depacketizer);
+int opus_writer_alloc(struct opus_writer_s** writer_out);
+void opus_writer_free(struct opus_writer_s* writer);
 int opus_writer_load_config(struct opus_writer_s* writer,
                             struct opus_writer_config* config);
-int opus_depacketizer_push(struct opus_writer_s* depacketizer,
+int opus_writer_push(struct opus_writer_s* writer,
                            struct rtp_header* header,
                            struct mbuf* packet);
-const char* opus_depacketizer_get_outfile_path(struct opus_writer_s* pthis);
+int opus_writer_close(struct opus_writer_s* writer);
+const char* opus_writer_get_outfile_path(struct opus_writer_s* pthis);
 
-#endif /* opus_depacketizer_h */
+#endif /* opus_writer_h */
