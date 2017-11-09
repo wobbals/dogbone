@@ -4,3 +4,5 @@ resource_dstats.log
 broadcastperf.log
 mediafile.log
 local.json
+local.yml
+local.yaml
