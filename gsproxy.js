@@ -88,10 +88,9 @@ var Sift = {
     this._sock.on('pong', (p) => {
       console.log('gsproxy: pong', p);
     });
-    this._sock.on('message', function(event) {
-      console.log('gsproxy: incoming', event);
-      var data = JSON.parse( event.data );
-      this._onSocketMessage(data);
+    this._sock.on('message', (msg) => {
+      console.log('gsproxy: incoming', msg);
+      this._onSocketMessage(JSON.parse(msg));
     });
     this._sock.on('error', (err) => {
       console.log('gsproxy: wserr', err);

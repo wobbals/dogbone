@@ -20,7 +20,7 @@ const scope_uri_for = function(service, privilege, params) {
 const generateToken = function(credentials, expires = 3600) {
   let capabilities =
   scope_uri_for('client', 'outgoing', {
-    app_id: credentials.appId
+    appSid: credentials.appId
   });
   let payload = {
     scope: capabilities,
