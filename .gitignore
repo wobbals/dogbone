@@ -6,3 +6,4 @@ mediafile.log
 local.json
 local.yml
 local.yaml
+.DS_Store

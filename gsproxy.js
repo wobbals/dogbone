@@ -67,7 +67,7 @@ var Sift = {
     this._state = this.State.AUTHENTICATING;
 
     console.log('gsproxy: authenticate');
-    console.log('open connection to ' + this.GRIDSPACE_VOIP_URI);
+    console.log('open ws connection to ' + this.GRIDSPACE_VOIP_URI);
 
     this._token = token;
 
@@ -79,8 +79,8 @@ var Sift = {
     this._sock.on('headers', (h) => {
       console.log('gsproxy: wsheaders', h);
     })
-    this._sock.on('unexpected-response', (r) => {
-      console.log('gsproxy: 500');
+    this._sock.on('unexpected-response', (req, res) => {
+      console.log(`gsproxy: unexpected-response ${res.statusCode} ${res.statusMessage}`);
     })
     this._sock.on('ping', (p) => {
       this._sock.pong(p);
@@ -156,7 +156,7 @@ var Sift = {
   },
 
   _send: function(message) {
-    console.log('gsproxy: outgoing ', message);
+    console.log('gsproxy: outgoing msg', message);
     this._sock.send(JSON.stringify(message));
   },
 
