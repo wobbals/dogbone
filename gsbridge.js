@@ -20,6 +20,7 @@ let gsToken = gs.generateToken({
 
 sift.onAuthenticated = function () {
   console.log('sift authenticated');
+  openTokConnect();
 }
 sift.onIncomingCall = function() {
   console.log('sift incoming call');
@@ -60,6 +61,7 @@ let subscribers = {};
 
 ot.on('stream#created', function(stream) {
   logger.debug(`stream created! ${JSON.stringify(stream, null, ' ')}`);
+  sift.connect(`ot-streamId:${stream.id}`);
   let subscriber = ot.subscribe({ streamId: stream.id });
 
   subscribers[stream.id] = {
@@ -70,13 +72,22 @@ ot.on('stream#created', function(stream) {
     logger.debug(`subscriber stream ${stream.id} received offer ${sdp}`);
     sift.forwardLocalDescription(sdp);
   });
+
+  // this is only going to happen on p2p calls, which we have no good reason to
+  // do, but hey - it's here for completeness
+  subscriber.on('candidate', function(sdp) {
+    logger.debug("subscriber candidate", sdp);
+    sift.forwardLocalCandidate(sdp);
+  });
 });
 
-// ot.connect(sessionId, token)
-// .then(function() {
-//   console.log("ot connected");
-// }).catch(function(err) {
-//   console.log('Error', err);
-// });
-
 console.log(`sup`);
+
+let openTokConnect = function() {
+  ot.connect(sessionId, token)
+  .then(function() {
+    console.log("ot connected");
+  }).catch(function(err) {
+    console.log('Error', err);
+  });
+}

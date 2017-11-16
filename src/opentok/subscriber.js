@@ -32,6 +32,9 @@ module.exports = function(raptor, options) {
         if (msg.method == 'offer') {
           subscriber.emit('offer', msg.content.sdp);
         }
+        if (msg.method == 'candidate') {
+          subscriber.emit('candidate', msg.content.candidate);
+        }
       });
     },
     create: function() {

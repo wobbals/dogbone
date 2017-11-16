@@ -102,7 +102,7 @@ var Sift = {
     });
   },
 
-  connect: function(data, mediaStream) {
+  connect: function(data) {
     // Initiate an outbound call.
     // Call will be handled by the application bound to the Token passed to init. Data is an
     // optional opaque json-serializable object that will be passed in the POST parameters
@@ -117,7 +117,7 @@ var Sift = {
     // Ready to begin the voip connection!
     this._state = this.State.CONNECTING;
     this._send({type: 'connect', body: data});
-    _onVoipConnected()
+    this._onVoipConnected();
   },
 
   hangUp: function() {
