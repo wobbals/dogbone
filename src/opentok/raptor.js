@@ -141,7 +141,9 @@ Message.subscribers.create =
   function(apiKey, sessionId, streamId, subscriberId, connectionId, channelsToSubscribeTo) {
   var content = {
     id: subscriberId,
-    connection: connectionId
+    connection: connectionId,
+    bundleSupport: true,
+    rtcpMuxSupport: true
   };
   if (channelsToSubscribeTo) content.channel = channelsToSubscribeTo;
 

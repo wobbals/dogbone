@@ -25,7 +25,6 @@ function Client(options) {
         });
         raptor = RaptorTransport(options);
         raptor.on('stream#created', function(msg) {
-          options.log('hark! a stream created');
           if (msg.content.connection.id == connectionId) {
             return;
           }

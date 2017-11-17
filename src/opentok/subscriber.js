@@ -33,7 +33,7 @@ module.exports = function(raptor, options) {
           subscriber.emit('offer', msg.content.sdp);
         }
         if (msg.method == 'candidate') {
-          subscriber.emit('candidate', msg.content.candidate);
+          subscriber.emit('candidate', msg.content);
         }
       });
     },
@@ -45,6 +45,13 @@ module.exports = function(raptor, options) {
     answer: function(sdp) {
       var answer = RaptorMessage.subscribers.answer(options.apiKey, options.sessionId, options.streamId, subscriberId, sdp);
       return subscriber.send(answer);
+    },
+    remoteCandidate: function(candidate) {
+      let msg = RaptorMessage.subscribers.candidate(
+        options.apiKey, options.sessionId, options.streamId,
+        subscriberId, candidate
+      );
+      return subscriber.send(msg);
     },
     close: function() {
       // TODO: destroy subscriber

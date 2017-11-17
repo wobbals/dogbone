@@ -34,13 +34,6 @@ sift.onRemotePartyHungUp = function() {
 sift.onError = function(err) {
   console.log('sift: error ', err);
 }
-sift.onRemoteAnswer = function(answer) {
-  console.log('sift: remote answer', answer);
-  // subscriber.answer(answer.sdp);
-}
-sift.onRemoteCandidate = function(candidate) {
-  console.log('sift: remoteCandidate', candidate);
-}
 
 sift.authenticate(gsToken);
 
@@ -70,15 +63,25 @@ ot.on('stream#created', function(stream) {
 
   subscriber.on('offer', function(sdp) {
     logger.debug(`subscriber stream ${stream.id} received offer ${sdp}`);
-    sift.forwardLocalDescription(sdp);
+    sift.forwardOffer(sdp);
   });
 
   // this is only going to happen on p2p calls, which we have no good reason to
   // do, but hey - it's here for completeness
-  subscriber.on('candidate', function(sdp) {
-    logger.debug("subscriber candidate", sdp);
-    sift.forwardLocalCandidate(sdp);
+  subscriber.on('candidate', function(candidate) {
+    logger.debug("subscriber candidate", candidate);
+    sift.forwardLocalCandidate(candidate);
   });
+
+  sift.onRemoteAnswer = function(answer) {
+    console.log('sift: remote answer', answer);
+    subscriber.answer(answer.sdp);
+  };
+
+  sift.onRemoteCandidate = function(candidate) {
+    console.log('sift: remoteCandidate', candidate);
+    subscriber.remoteCandidate(candidate);
+  };
 });
 
 console.log(`sup`);
