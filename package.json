@@ -27,12 +27,13 @@
     "node-uuid": "^1.4.7",
     "request": "^2.81.0",
     "rsvp": "^3.4.0",
+    "sip": "0.0.4",
     "snap-framework": "^1.0.2",
     "text-encoding": "^0.6.4",
     "underscore": "^1.8.3",
     "watson-developer-cloud": "^2.27.0",
     "watson-speech": "^0.32.3",
-    "ws": "^2.2.0",
+    "ws": "^3.3.1",
     "zeromq": "^4.2.0"
   }
 }

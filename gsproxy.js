@@ -35,11 +35,14 @@ var Sift = {
   onRemoteAnswer: null,
   onRemoteCandidate: null,
 
-  forwardLocalDescription: function(desc) {
+  forwardLocalDescription: function(sdp) {
     // send a desc to gridspace
     this._send({
       type: "desc",
-      body: desc
+      body: {
+        sdp: sdp,
+        type: "offer"
+      }
     });
   },
 
